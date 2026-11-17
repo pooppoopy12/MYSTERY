@@ -342,6 +342,9 @@
       line-height: 1.55;
     }
 
+    .misfiled { display:block; align-self:flex-start; margin:-7px 0 25px; padding:9px 0; width:max-content; max-width:100%; color:#f1c3ad; font-size:11px; letter-spacing:.08em; text-decoration:underline dotted; text-underline-offset:5px; }
+    .misfiled[hidden] { display:none }
+    .misfiled:hover, .misfiled:focus-visible { color:var(--accent) }
     .receipt {
       display: grid;
       grid-template-columns: auto 1fr;
@@ -439,6 +442,7 @@
         <p class="channel" id="channel"></p>
         <h1 id="headline"></h1>
         <p class="statement" id="statement"></p>
+        <a class="misfiled" id="misfiled" href="receipt.html" hidden aria-label="Inspect a misfiled proof of delivery">↳ misfiled: proof of delivery / 0003—0000—?</a>
         <div class="receipt" aria-label="Evidence receipt">
           <span>source</span><span id="source"></span>
           <span>integrity</span><span id="integrity"></span>
@@ -558,6 +562,7 @@
         readout.classList.remove("flash");
         void readout.offsetWidth;
         readout.classList.add("flash");
+        document.querySelector("#misfiled").hidden = index !== 4;
 
         if (announce) {
           changes += 1;
