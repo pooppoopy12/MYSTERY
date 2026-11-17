@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark light">
+<meta name="description" content="A delivery receipt issued to someone who has not arrived.">
+<title>MYSTERY / proof of delivery</title>
+<style>
+  :root { --bg:#100e12; --paper:#eee8d9; --ink:#29242a; --muted:#837a7c; --coral:#f1a995; --line:#c5bcb0; }
+  * { box-sizing:border-box }
+  html { min-height:100%; }
+  body {
+    margin:0; min-height:100vh; background:var(--bg); color:#dad1d3;
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+    background-image:radial-gradient(ellipse at 50% 18%,#30202b 0,transparent 60%),repeating-linear-gradient(0deg,transparent 0 35px,#ffffff05 36px);
+  }
+  body::before {
+    content:"";position:fixed;inset:0;pointer-events:none;opacity:.22;
+    background:linear-gradient(90deg,transparent 49.95%,#906b6150 50%,transparent 50.05%);
+  }
+  a { color:inherit; text-decoration-thickness:1px; text-underline-offset:4px }
+  a:hover,a:focus-visible { color:var(--coral) }
+  button { font:inherit;cursor:pointer }
+  :focus-visible { outline:2px solid #ec927c;outline-offset:4px }
+  .wrap { width:min(1060px,calc(100% - 38px)); margin:auto; padding:26px 0 54px }
+  .mast { display:flex;justify-content:space-between;align-items:center;gap:20px;color:#958890;font-size:11px;letter-spacing:.13em;text-transform:uppercase }
+  .mast a { text-decoration:none }
+  .mast .mark { color:var(--coral) }
+  .mast .mark::before { content:"◌";display:inline-block;margin-right:10px;font-size:20px;vertical-align:-2px }
+  .intro { margin:clamp(48px,9vw,105px) 0 38px;max-width:800px }
+  .eyebrow { color:var(--coral);font-size:11px;letter-spacing:.2em;text-transform:uppercase }
+  h1 { margin:16px 0 15px;font-family:Georgia,"Times New Roman",serif;font-size:clamp(45px,8.5vw,100px);font-weight:normal;line-height:.92;letter-spacing:-.065em }
+  .intro p:last-child { color:#9f929c;font-size:13px;line-height:1.8;max-width:60ch }
+  .layout { display:grid;grid-template-columns:minmax(0,1.18fr) minmax(260px,.82fr);gap:clamp(24px,5vw,70px);align-items:start }
+  .ticket { position:relative;color:var(--ink);background:var(--paper);padding:34px clamp(22px,4.3vw,44px) 42px;box-shadow:5px 8px 0 #81756f25,0 25px 65px #0007;transform:rotate(-.6deg) }
+  .ticket::before,.ticket::after { content:"";position:absolute;left:0;right:0;height:11px;background:radial-gradient(circle at 7px 0,var(--bg) 5px,transparent 5.5px) repeat-x;background-size:14px 11px; }
+  .ticket::before { top:-1px } .ticket::after { bottom:-1px;transform:rotate(180deg) }
+  .tickethead { display:flex;justify-content:space-between;gap:12px;align-items:start;border-bottom:2px solid var(--ink);padding-bottom:25px }
+  .tickethead strong { display:block;font-size:14px;letter-spacing:.13em }
+  .tickethead small { display:block;color:#877d80;margin-top:7px;font-size:10px;letter-spacing:.08em }
+  .stamp { border:1px solid #b26361;color:#a14d4a; padding:9px 11px;transform:rotate(7deg);font-size:10px;line-height:1.45;letter-spacing:.09em;text-align:center }
+  .code {display:block;margin:26px 0 12px;font-size:clamp(22px,4vw,40px);letter-spacing:.12em;font-weight:600;word-break:break-all}
+  .barcode { display:block;height:37px;max-width:280px;background:repeating-linear-gradient(90deg,var(--ink) 0 2px,transparent 2px 5px,var(--ink) 5px 6px,transparent 6px 10px,var(--ink) 10px 14px,transparent 14px 17px);opacity:.83 }
+  .tiny { font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:#857e77 }
+  .record { margin:30px 0 0;border-top:1px dashed #a99d95 }
+  .record div { display:grid;grid-template-columns:minmax(95px,1fr) minmax(0,1.65fr);gap:10px;padding:15px 0;border-bottom:1px solid #cec4b6;font-size:12px;line-height:1.55 }
+  dt { color:#817777;text-transform:uppercase;letter-spacing:.07em;font-size:10px }
+  dd { margin:0;overflow-wrap:anywhere }
+  .early { color:#9f3a37;font-weight:700 }
+  .negative { color:#ae4845;font-size:22px;font-family:Georgia,serif }
+  .ticketfoot { margin:30px 0 0;border-top:2px solid var(--ink);padding-top:14px;display:flex;justify-content:space-between;gap:14px;font-size:9px;letter-spacing:.1em;color:#736d6a }
+  .side { padding:20px 0 }
+  .side .serial { color:#847780;font-size:10px;letter-spacing:.18em }
+  .envelope { position:relative;margin:33px auto 44px;width:min(100%,310px);aspect-ratio:1.35;border:1px solid #6c5961;background:linear-gradient(145deg,#342830,#1b171d);box-shadow:0 30px 70px #0007;display:flex;justify-content:center;align-items:center;overflow:hidden; }
+  .envelope::before,.envelope::after { content:"";position:absolute;inset:0;pointer-events:none }
+  .envelope::before { background:linear-gradient(29deg,transparent 49.6%,#6c5961 50%,transparent 50.4%),linear-gradient(-29deg,transparent 49.6%,#6c5961 50%,transparent 50.4%);opacity:.8 }
+  .envelope::after { border-bottom:1px solid #6c5961;transform:translateY(-46%) rotate(0.01deg) }
+  .seal { position:relative;z-index:1;width:92px;height:92px;border-radius:50%;border:8px double #b16d61;background:radial-gradient(circle at 35% 32%,#b66960,#693d43 70%,#482b30);color:#f1c3ad;box-shadow:0 6px 24px #000a;display:grid;place-items:center;font-size:28px;transition:transform .5s,box-shadow .5s }
+  .seal:hover { transform:rotate(-13deg) scale(1.05);box-shadow:0 3px 40px #b66c6777 }
+  .seal[aria-expanded="true"] { transform:rotate(38deg) scale(.91); }
+  .side h2 { font-family:Georgia,serif;font-size:clamp(26px,4vw,43px);font-weight:normal;line-height:1.08;letter-spacing:-.04em;margin:0 0 13px }
+  .side p { color:#9d909b;line-height:1.75;font-size:12px }
+  .note { border-left:2px solid #694f55;padding:5px 0 5px 17px;margin-top:24px }
+  .note p { margin:0 }
+  .note .answer {color:#e6d1c7;letter-spacing:.025em}
+  .witness { display:none;margin:24px 0 0;padding:21px 23px;border:1px solid #705b5c;background:#20191e;box-shadow:inset 3px 0 0 #b36b65 }
+  .witness.open { display:block;animation:appear .38s ease both }
+  .witness .tiny {color:#cb9b8e}
+  .witness p { color:#e9d8d2;font-family:Georgia,serif;font-size:22px;line-height:1.4;margin:10px 0 0 }
+  .witness em { color:var(--coral);font-style:normal }
+  .check { display:block;margin-top:30px;background:transparent;color:#d3c6c7;border:1px solid #78656a;padding:12px 16px;letter-spacing:.1em;font-size:10px;text-transform:uppercase }
+  .check:hover { border-color:#edac98;color:#ffddca }
+  .result { margin:14px 0 0;min-height:65px;max-width:36ch;color:#bca6a5!important }
+  .foot {display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;border-top:1px solid #493940;margin-top:62px;padding-top:23px;font-size:10px;line-height:1.8;letter-spacing:.06em;color:#766871}
+  .foot span:last-child { color:#a48f90 }
+  @keyframes appear {from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+  @media(max-width:730px){.layout{grid-template-columns:1fr}.side{padding:0}.envelope{margin:14px 0 34px}.intro{margin-top:54px}.ticket{transform:none}}
+  @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="mast">
+    <a class="mark" href="index.html" aria-label="Return to MYSTERY intake apparatus">MYSTERY / INTERNAL POST</a>
+    <span>Office of things that arrived</span>
+  </header>
+  <main>
+    <div class="intro">
+      <p class="eyebrow">Notice of successful delivery / filed in advance</p>
+      <h1>Before the<br>recipient.</h1>
+      <p>This receipt is proof of delivery. The sender has not been located. The recipient has not arrived. Both of these things were considered immaterial to the delivery.</p>
+    </div>
+    <div class="layout">
+      <article class="ticket" aria-label="An impossible delivery receipt">
+        <div class="tickethead">
+          <div><strong>DELIVERY CONFIRMATION</strong><small>FOR INTERNAL USE BY THE ABSENT</small></div>
+          <div class="stamp">DELIVERED<br>BEFORE<br>DISPATCH</div>
+        </div>
+        <span class="code">0003—0000—?</span>
+        <span class="barcode" aria-hidden="true"></span>
+        <p class="tiny">Tracking number is not a location.</p>
+        <dl class="record">
+          <div><dt>Sender</dt><dd>Not recorded.</dd></div>
+          <div><dt>Addressee</dt><dd>To be assigned upon entry.</dd></div>
+          <div><dt>Dispatch</dt><dd>17 NOV 2026 · 22:14:06</dd></div>
+          <div><dt>Delivery</dt><dd class="early">17 NOV 2026 · 22:14:05</dd></div>
+          <div><dt>Transit time</dt><dd class="negative">−00:00:01</dd></div>
+          <div><dt>Contents</dt><dd>One attachment. No bytes received.</dd></div>
+          <div><dt>Declared value</dt><dd>One sentence, not enclosed.</dd></div>
+          <div><dt>Signature</dt><dd>Held by the door.</dd></div>
+        </dl>
+        <p class="ticketfoot"><span>CLAIM: 03 / PENDING</span><span>DO NOT RECONCILE</span></p>
+      </article>
+      <aside class="side" aria-label="Inspection desk">
+        <div class="serial">ENVELOPE 03 / NO RETURN ADDRESS</div>
+        <div class="envelope">
+          <button id="seal" class="seal" aria-expanded="false" aria-controls="witness" type="button" aria-label="Inspect the wax seal">III</button>
+        </div>
+        <h2>It arrived<br>unopened.</h2>
+        <p>The envelope has not yet been made. Please inspect the seal only if you are prepared to be identified by it.</p>
+        <div class="note"><p>The door was not addressed. It accepted the delivery anyway.</p></div>
+        <div class="witness" id="witness" role="region" aria-label="Text beneath the seal">
+          <span class="tiny">Found under the seal / not written by sender</span>
+          <p>THE RECIPIENT HAS<br><em>YOUR EXACT POSTURE.</em></p>
+        </div>
+        <button type="button" class="check" id="verify" aria-controls="proof" aria-label="Request proof of delivery">Request proof of delivery <span aria-hidden="true">↗</span></button>
+        <p class="result" id="proof" role="status" aria-live="polite">No proof requested. No proof required.</p>
+      </aside>
+    </div>
+  </main>
+  <footer class="foot">
+    <a href="index.html">← RETURN TO INTAKE</a>
+    <span>NO UPLOAD ENDPOINT. NO TELEMETRY. NO CERTAINTY.</span>
+    <span>THE ABSENCE HAS BEEN SIGNED FOR.</span>
+  </footer>
+</div>
+<script>
+(function () {
+  "use strict";
+  var seal = document.getElementById("seal");
+  var witness = document.getElementById("witness");
+  var verify = document.getElementById("verify");
+  var proof = document.getElementById("proof");
+  var reports = [
+    "Courier confirms the envelope was received. Courier denies visiting the address.",
+    "The delivery photograph depicts a closed door. The camera was facing the other way.",
+    "Signature verified. Handwriting belongs to someone who has not signed yet.",
+    "Your request was received one second before you submitted it.",
+    "Request denied. The recipient has already asked you to stop asking."
+  ];
+  var checks = 0;
+  seal.addEventListener("click", function () {
+    var open = seal.getAttribute("aria-expanded") !== "true";
+    seal.setAttribute("aria-expanded", String(open));
+    witness.classList.toggle("open", open);
+    seal.setAttribute("aria-label", open ? "Close inspection of the wax seal" : "Inspect the wax seal");
+  });
+  verify.addEventListener("click", function () {
+    proof.textContent = reports[checks % reports.length];
+    checks += 1;
+    if (checks === 3 && seal.getAttribute("aria-expanded") !== "true") {
+      proof.textContent += " Look beneath the seal.";
+    }
+  });
+})();
+</script>
+</body>
+</html>
